@@ -43,9 +43,9 @@ public class UserResources {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteUser(@PathParam("id") String id) throws Exception {
-        userService.deleteUser(Long.valueOf(id));
-        return Response.status(Response.Status.OK).build();
+    public Response deleteUser(@PathParam("id") String id) {
+        String response = userService.deleteUser(Long.valueOf(id));
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
     @GET

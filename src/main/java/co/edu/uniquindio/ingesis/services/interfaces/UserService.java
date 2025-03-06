@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public interface UserService {
     UserResponse createUser(UserRegistrationRequest request);
     UserResponse getUser(Long id);
-    String deleteUser(Long id) throws Exception;
+    String deleteUser(Long id);
     UserResponse updateUser(UserRegistrationRequest request);
     UserResponse updateUserPatch(Long id,UserRegistrationRequest request);
     ArrayList<User> getUser(PaginationRequest request);

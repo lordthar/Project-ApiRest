@@ -9,7 +9,6 @@ import co.edu.uniquindio.ingesis.repositories.UserRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.UserService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +37,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String deleteUser(Long id) throws Exception {
+    public String deleteUser(Long id) {
         UserResponse user = getUser(id);
 
         if (user == null) {
-            throw new Exception("Error");
+            throw new NotFoundException("Error");
         }
         userRepository.deleteById(Long.valueOf(user.id()));
 
