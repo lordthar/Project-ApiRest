@@ -1,11 +1,11 @@
 package co.edu.uniquindio.ingesis.dtos;
 
 import co.edu.uniquindio.ingesis.domain.Rol;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
+import jakarta.ws.rs.Path;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +27,12 @@ public record UserRegistrationRequest(
         @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
         @Size(min = 8, message = "La longitud minima es de 8")
         String password,
+        @NotNull(message = "La fecha no puede ser nula")
+        @PastOrPresent(message = "La fecha no puede ser futura")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        LocalDate dateBirth,
+        @Pattern(regexp = "^[0-9]+$", message = "El número de teléfono solo debe contener dígitos.")
+        String phoneNumber,
         Collection<Rol> roles
 ) {
     public UserRegistrationRequest {

@@ -1,12 +1,17 @@
 package co.edu.uniquindio.ingesis.resources;
 
+import co.edu.uniquindio.ingesis.domain.User;
+import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.dtos.UserRegistrationRequest;
+import co.edu.uniquindio.ingesis.dtos.UserResponse;
 import co.edu.uniquindio.ingesis.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,18 +23,22 @@ public class UserResources {
 
     @POST
     public Response createUser(@Valid UserRegistrationRequest request) {
-        return null;
+        UserResponse userResponse = userService.createUser(request);
+        return Response.status(Response.Status.CREATED).entity(userResponse).build();
     }
 
     @GET
     public Response getUsers(@QueryParam("offset") @DefaultValue("0") Integer offset, @QueryParam("limit") @DefaultValue("20") Integer limit) {
-        return null;
+        PaginationRequest paginationRequest = new PaginationRequest(offset, limit);
+        ArrayList<User> user = userService.getUser(paginationRequest);
+        return Response.status(Response.Status.OK).entity(user).build();
     }
 
     @PUT
     @Path("/{id}")
     public Response highUpdateUser(@Valid UserRegistrationRequest request, @PathParam("id") String id) {
-        return null;
+        UserResponse userResponse = userService.updateUser(request);
+        return Response.status(Response.Status.OK).entity(userResponse).build();
     }
 
     @DELETE
@@ -41,13 +50,14 @@ public class UserResources {
 
     @GET
     @Path("/{id}")
-    public Response getUser(@PathParam("i  d") String id){
+    public Response getUser(@PathParam("id") String id){
         return null;
     }
 
     @PATCH
     @Path("/{id}")
     public Response lowUpdateUser(@PathParam("id") String id, @Valid UserRegistrationRequest request) {
-        return null;
+        UserResponse userResponse = userService.updateUserPatch(Long.valueOf(id),request);
+        return Response.status(Response.Status.OK).entity(userResponse).build();
     }
 }

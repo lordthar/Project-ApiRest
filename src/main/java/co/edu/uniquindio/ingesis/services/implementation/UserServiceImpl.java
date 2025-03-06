@@ -7,8 +7,11 @@ import co.edu.uniquindio.ingesis.dtos.UserResponse;
 import co.edu.uniquindio.ingesis.mappers.UserMapper;
 import co.edu.uniquindio.ingesis.repositories.UserRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.UserService;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -23,7 +26,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(UserRegistrationRequest request) {
-        return null;
+        User user = userMapper.parseOf(request);
+        user.persist();
+        return userMapper.toUserResponse(user);
     }
 
     @Override
@@ -47,12 +52,46 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse updateUser(UserRegistrationRequest request) {
-        return null;
+        User user = userRepository.find("identification", request.identification()).firstResult();
+        if(user == null) {
+            throw new NotFoundException("No existe el usuario");
+       }
+       user.setName(request.name());
+       user.setLastName(request.lastName());
+       user.setEmail(request.email());
+       user.setPassword(request.password());
+       user.setUsername(request.username());
+       user.setPhoneNumber(request.phoneNumber());
+       user.persist();
+
+       return userMapper.toUserResponse(user);
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserPatch(Long id, UserRegistrationRequest request) {
+        User user = userRepository.findById(id);
+        if(user == null) {
+            throw new NotFoundException("No existe el usuario");
+        }
+        user.setName(request.name());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+        user.setPassword(request.password());
+        user.setUsername(request.username());
+        user.setPhoneNumber(request.phoneNumber());
+        user.persist();
+
+        return userMapper.toUserResponse(user);
+
     }
 
     @Override
     public ArrayList<User> getUser(PaginationRequest request) {
-        return null;
+        PanacheQuery<User> query = userRepository.findAll();
+        query.page(request.offset() / request.limit() ,request.limit());
+        return new ArrayList<>(query.list());
     }
 
 }

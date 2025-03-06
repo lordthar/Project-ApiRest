@@ -12,6 +12,7 @@ public interface UserService {
     UserResponse getUser(Long id);
     String deleteUser(Long id) throws Exception;
     UserResponse updateUser(UserRegistrationRequest request);
+    UserResponse updateUserPatch(Long id,UserRegistrationRequest request);
     ArrayList<User> getUser(PaginationRequest request);
 
 }
