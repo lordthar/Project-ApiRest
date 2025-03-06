@@ -51,7 +51,8 @@ public class UserResources {
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") String id){
-        return null;
+        UserResponse userResponse = userService.getUser(Long.valueOf(id));
+        return Response.status(Response.Status.OK).entity(userResponse).build();
     }
 
     @PATCH
