@@ -33,7 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUser(Long id) {
-        return null;
+        User user = userRepository.findById(id);
+        return userMapper.toUserResponse(user);
     }
 
     @Override
