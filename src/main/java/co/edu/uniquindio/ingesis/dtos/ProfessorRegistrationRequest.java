@@ -3,14 +3,13 @@ package co.edu.uniquindio.ingesis.dtos;
 import co.edu.uniquindio.ingesis.domain.Rol;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
-import jakarta.ws.rs.Path;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public record UserRegistrationRequest(
+public record ProfessorRegistrationRequest(
         @NotBlank(message = "El nombre es requerido")
         String name,
         @NotBlank(message = "El apellido es requerido")
@@ -35,7 +34,10 @@ public record UserRegistrationRequest(
         String phoneNumber,
         Collection<Rol> roles
 ) {
-        public UserRegistrationRequest {
-                roles = Objects.requireNonNullElse(roles,List.of(Rol.USER));
-        }
+    public ProfessorRegistrationRequest {
+        roles = Objects.requireNonNullElse(roles, List.of(Rol.PROFESSOR));
+    }
 }
+
+
+

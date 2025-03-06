@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUser(Long id) {
+    public UserResponse getUsers(Long id) {
         User user = userRepository.findById(id);
         return userMapper.toUserResponse(user);
     }
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String deleteUser(Long id) {
-        UserResponse user = getUser(id);
+        UserResponse user = getUsers(id);
 
         if (user == null) {
             throw new NotFoundException("Error");
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<User> getUser(PaginationRequest request) {
+    public ArrayList<User> getUsers(PaginationRequest request) {
         PanacheQuery<User> query = userRepository.findAll();
         query.page(request.offset() / request.limit() ,request.limit());
         return new ArrayList<>(query.list());

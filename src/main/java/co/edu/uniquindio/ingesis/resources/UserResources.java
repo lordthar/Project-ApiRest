@@ -30,8 +30,8 @@ public class UserResources {
     @GET
     public Response getUsers(@QueryParam("offset") @DefaultValue("0") Integer offset, @QueryParam("limit") @DefaultValue("20") Integer limit) {
         PaginationRequest paginationRequest = new PaginationRequest(offset, limit);
-        ArrayList<User> user = userService.getUser(paginationRequest);
-        return Response.status(Response.Status.OK).entity(user).build();
+        ArrayList<User> users = userService.getUsers(paginationRequest);
+        return Response.status(Response.Status.OK).entity(users).build();
     }
 
     @PUT
@@ -51,7 +51,7 @@ public class UserResources {
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") String id){
-        UserResponse userResponse = userService.getUser(Long.valueOf(id));
+        UserResponse userResponse = userService.getUsers(Long.valueOf(id));
         return Response.status(Response.Status.OK).entity(userResponse).build();
     }
 
