@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 
-@Path("/professors")
+@Path("/subjects")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor

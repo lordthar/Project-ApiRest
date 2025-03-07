@@ -1,7 +1,6 @@
 package co.edu.uniquindio.ingesis.services.interfaces;
 
 import co.edu.uniquindio.ingesis.domain.Professor;
-import co.edu.uniquindio.ingesis.domain.User;
 import co.edu.uniquindio.ingesis.dtos.*;
 
 import java.util.ArrayList;

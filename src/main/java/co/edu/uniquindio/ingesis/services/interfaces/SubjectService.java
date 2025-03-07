@@ -1,6 +1,6 @@
 package co.edu.uniquindio.ingesis.services.interfaces;
 
-import co.edu.uniquindio.ingesis.domain.Professor;
+
 import co.edu.uniquindio.ingesis.domain.Subject;
 import co.edu.uniquindio.ingesis.dtos.*;
 

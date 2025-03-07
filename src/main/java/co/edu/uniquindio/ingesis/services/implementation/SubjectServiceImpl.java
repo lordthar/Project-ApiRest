@@ -1,11 +1,10 @@
 package co.edu.uniquindio.ingesis.services.implementation;
 
-import co.edu.uniquindio.ingesis.domain.Professor;
 import co.edu.uniquindio.ingesis.domain.Subject;
-import co.edu.uniquindio.ingesis.domain.User;
-import co.edu.uniquindio.ingesis.dtos.*;
+import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
+import co.edu.uniquindio.ingesis.dtos.SubjectRegistrationRequest;
+import co.edu.uniquindio.ingesis.dtos.SubjectResponse;
 import co.edu.uniquindio.ingesis.mappers.SubjectMapper;
-import co.edu.uniquindio.ingesis.repositories.ProfessorRepository;
 import co.edu.uniquindio.ingesis.repositories.SubjectRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.SubjectService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -13,8 +12,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
+
 @ApplicationScoped
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {

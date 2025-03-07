@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class ProfessorResources {
 
     final ProfessorService professorService;
-    private final String string;
 
     @POST
     public Response createProfessor(@Valid ProfessorRegistrationRequest request) {
