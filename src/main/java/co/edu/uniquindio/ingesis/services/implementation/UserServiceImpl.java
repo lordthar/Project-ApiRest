@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUsers(Long id) {
+    public UserResponse getUser(Long id) {
         User user = userRepository.findById(id);
         return userMapper.toUserResponse(user);
     }
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String deleteUser(Long id) {
-        UserResponse user = getUsers(id);
+        UserResponse user = getUser(id);
 
         if (user == null) {
             throw new NotFoundException("Error");

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public interface UserService {
     UserResponse createUser(UserRegistrationRequest request);
-    UserResponse getUsers(Long id);
+    UserResponse getUser(Long id);
     String deleteUser(Long id);
     UserResponse updateUser(UserRegistrationRequest request);
     UserResponse updateUserPatch(Long id,UserRegistrationRequest request);

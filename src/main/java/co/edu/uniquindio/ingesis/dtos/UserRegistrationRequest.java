@@ -3,7 +3,6 @@ package co.edu.uniquindio.ingesis.dtos;
 import co.edu.uniquindio.ingesis.domain.Rol;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
-import jakarta.ws.rs.Path;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -20,7 +19,7 @@ public record UserRegistrationRequest(
         @NotBlank(message = "El email es requerido")
         @Email
         String email,
-        @Size(min=4,max = 20,message = "El username debe tener mínimo 4 caracteres y máximo 20")
+        @Size(min = 4, max = 20, message = "El username debe tener mínimo 4 caracteres y máximo 20")
         @NotBlank(message = "El usuario es requerido")
         String username,
         @NotBlank(message = "La contraseña es requerida")
@@ -30,12 +29,12 @@ public record UserRegistrationRequest(
         @NotNull(message = "La fecha no puede ser nula")
         @PastOrPresent(message = "La fecha no puede ser futura")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate dateBirth,
+        LocalDate birthDate,
         @Pattern(regexp = "^[0-9]+$", message = "El número de teléfono solo debe contener dígitos.")
         String phoneNumber,
         Collection<Rol> roles
 ) {
-        public UserRegistrationRequest {
-                roles = Objects.requireNonNullElse(roles,List.of(Rol.USER));
-        }
+    public UserRegistrationRequest {
+        roles = Objects.requireNonNullElse(roles, List.of(Rol.USER));
+    }
 }
