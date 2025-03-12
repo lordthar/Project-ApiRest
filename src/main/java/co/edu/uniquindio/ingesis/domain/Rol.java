@@ -1,7 +1,7 @@
 package co.edu.uniquindio.ingesis.domain;
 
 public enum Rol {
-    USER,
+    STUDENT,
     ADMIN,
     PROFESSOR
 }

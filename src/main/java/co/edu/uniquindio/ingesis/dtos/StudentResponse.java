@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collection;
 
-public record UserResponse(
+public record StudentResponse(
         @NotBlank(message = "El id es requerido")
         String id,
         @NotBlank(message = "El nombre es requerido")
@@ -24,12 +24,6 @@ public record UserResponse(
         @NotBlank(message = "La cedula es requerida")
         String identification,
         String phoneNumber,
-        @NotBlank(message = "La password es requerida")
-        @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
-        String password,
-        @Size(min=4,max = 20,message = "El username debe tener mínimo 4 caracteres y máximo 20")
-        @NotBlank(message = "El user es requerido")
-        String username,
         LocalDate birthDate,
         Collection<Rol> roles
 ) {

@@ -1,14 +1,11 @@
 package co.edu.uniquindio.ingesis.services.implementation;
 
 import co.edu.uniquindio.ingesis.domain.Professor;
-import co.edu.uniquindio.ingesis.domain.User;
 import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.dtos.ProfessorRegistrationRequest;
 import co.edu.uniquindio.ingesis.dtos.ProfessorResponse;
-import co.edu.uniquindio.ingesis.dtos.UserResponse;
 import co.edu.uniquindio.ingesis.mappers.ProfessorMapper;
 import co.edu.uniquindio.ingesis.repositories.ProfessorRepository;
-import co.edu.uniquindio.ingesis.repositories.UserRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.ProfessorService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
