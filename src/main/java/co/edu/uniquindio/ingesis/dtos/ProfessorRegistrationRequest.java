@@ -29,7 +29,7 @@ public record ProfessorRegistrationRequest(
         @NotNull(message = "La fecha no puede ser nula")
         @PastOrPresent(message = "La fecha no puede ser futura")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate dateBirth,
+        LocalDate birthDate,
         @Pattern(regexp = "^[0-9]+$", message = "El número de teléfono solo debe contener dígitos.")
         String phoneNumber,
         Collection<Rol> roles

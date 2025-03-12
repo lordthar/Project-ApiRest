@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public record UserRegistrationRequest(
+public record StudentRegistrationRequest(
         @NotBlank(message = "El nombre es requerido")
         String name,
         @NotBlank(message = "El apellido es requerido")
@@ -19,13 +19,6 @@ public record UserRegistrationRequest(
         @NotBlank(message = "El email es requerido")
         @Email
         String email,
-        @Size(min = 4, max = 20, message = "El username debe tener mínimo 4 caracteres y máximo 20")
-        @NotBlank(message = "El usuario es requerido")
-        String username,
-        @NotBlank(message = "La contraseña es requerida")
-        @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
-        @Size(min = 8, message = "La longitud minima es de 8")
-        String password,
         @NotNull(message = "La fecha no puede ser nula")
         @PastOrPresent(message = "La fecha no puede ser futura")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -34,7 +27,7 @@ public record UserRegistrationRequest(
         String phoneNumber,
         Collection<Rol> roles
 ) {
-    public UserRegistrationRequest {
-        roles = Objects.requireNonNullElse(roles, List.of(Rol.USER));
+    public StudentRegistrationRequest {
+        roles = Objects.requireNonNullElse(roles, List.of(Rol.STUDENT));
     }
 }

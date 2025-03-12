@@ -3,10 +3,6 @@ package co.edu.uniquindio.ingesis.dtos;
 import co.edu.uniquindio.ingesis.domain.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-
-import java.time.LocalDate;
 import java.util.Collection;
 
 public record ProfessorResponse(
@@ -22,12 +18,6 @@ public record ProfessorResponse(
         @NotBlank(message = "La cedula es requerida")
         String identification,
         String phoneNumber,
-        @NotBlank(message = "La password es requerida")
-        @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
-        String password,
-        @Size(min=4,max = 20,message = "El username debe tener mínimo 4 caracteres y máximo 20")
-        @NotBlank(message = "El user es requerido")
-        String username,
         Collection<Rol> roles
 ) {
 }
