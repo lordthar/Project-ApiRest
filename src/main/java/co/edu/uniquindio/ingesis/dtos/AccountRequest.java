@@ -11,6 +11,6 @@ public record AccountRequest(
         @NotBlank(message = "La contraseña es requerida")
         @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
         @Size(min = 8, message = "La longitud minima es de 8")
-        String password,
+        String password
 ) {
 }

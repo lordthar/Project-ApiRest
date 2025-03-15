@@ -10,7 +10,6 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface StudentMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", expression = "java( io.quarkus.elytron.security.common.BcryptUtil.bcryptHash(userDTO.password()) )")
     Student parseOf(StudentRegistrationRequest userDTO);
 
     StudentResponse toUserResponse(Student student);

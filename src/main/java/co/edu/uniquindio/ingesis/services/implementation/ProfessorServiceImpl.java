@@ -59,7 +59,6 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setName(request.name());
         professor.setLastName(request.lastName());
         professor.setEmail(request.email());
-        professor.setPassword(request.password());
         professor.setPhoneNumber(request.phoneNumber());
         professor.persist();
 
@@ -76,7 +75,6 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setName(request.name());
         professor.setLastName(request.lastName());
         professor.setEmail(request.email());
-        professor.setPassword(request.password());
         professor.setPhoneNumber(request.phoneNumber());
         professor.persist();
 
