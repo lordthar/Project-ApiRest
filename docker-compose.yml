@@ -27,5 +27,14 @@ services:
     depends_on:
       - postgres
 
+  consul:
+    image: consul:1.15.4
+    ports:
+      - "8500:8500" # Interfaz web de Consul
+      - "8600:8600/udp" # DNS de Consul
+    volumes:
+      - ./config/consul/config:/etc/consul.d # Monta el directorio de configuración
+    command: agent -server -bootstrap-expect=1 -ui -client=0.0.0.0 -config-dir=/etc/consul.d
+
 volumes:
   postgres_data:
