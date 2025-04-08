@@ -8,10 +8,14 @@ import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import org.eclipse.microprofile.health.HealthCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Wellness
 @Singleton
 public class DatabaseHealthCheck implements HealthCheck {
+
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseHealthCheck.class);
 
     @Inject
     EntityManager entityManager;
@@ -26,8 +30,10 @@ public class DatabaseHealthCheck implements HealthCheck {
         try {
             // Consulta para verificar conexión a PostgreSQL
             entityManager.createNativeQuery("SELECT 1").getSingleResult();
+            logger.info("Conexión a la base de datos exitosa.");  // Log para estado OK
             return 0; // OK
         } catch (PersistenceException e) {
+            logger.error("Error al intentar conectar a la base de datos: {}", e.getMessage(), e); // Log para error
             return 2; // CRITICAL
         }
     }

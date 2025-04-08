@@ -12,11 +12,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 @ApplicationScoped
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
 
     final SubjectRepository subjectRepository;
     final SubjectMapper subjectMapper;
@@ -24,63 +29,80 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     @Transactional
     public SubjectResponse createSubject(SubjectRegistrationRequest request) {
+        logger.info("Creando una nueva materia con el request: {}", request);
         Subject subject = subjectMapper.parceOf(request);
         subject.persist();
+        logger.info("Materia creada con éxito: {}", subject);
         return subjectMapper.toSubjectResponse(subject);
     }
 
     @Override
     public SubjectResponse getSubject(Long id) {
+        logger.info("Obteniendo materia con ID: {}", id);
         Subject subject = subjectRepository.findById(id);
-        return subjectMapper.toSubjectResponse(subject);
+        SubjectResponse subjectResponse = subjectMapper.toSubjectResponse(subject);
+        logger.info("Materia obtenida: {}", subjectResponse);
+        return subjectResponse;
     }
 
     @Override
     @Transactional
     public String deleteSubject(Long id) {
-        SubjectResponse subjectResponse = getSubject(id);
-
-        if (subjectResponse == null) {
-            throw new NotFoundException("Error");
+        try {
+            logger.info("Eliminando materia con ID: {}", id);
+            SubjectResponse subjectResponse = getSubject(id);
+            if (subjectResponse == null) {
+                logger.warn("Materia no encontrada con ID: {}", id);
+                throw new NotFoundException("Materia no encontrada");
+            }
+            subjectRepository.deleteById(id);
+            logger.info("Materia eliminada correctamente con ID: {}", id);
+            return "Materia eliminada correctamente";
+        } catch (Exception e) {
+            logger.error("Error al eliminar materia con ID: {}", id, e);
+            return "Error al eliminar la materia";
         }
-        subjectRepository.deleteById(Long.valueOf(subjectResponse.id()));
-
-        return "la materia fue eliminada correctamente";
     }
 
     @Override
     @Transactional
     public SubjectResponse updateSubject(SubjectRegistrationRequest request) {
+        logger.info("Actualizando materia con request: {}", request);
         Subject subject = subjectRepository.find("name", request.name()).firstResult();
-        if(subject == null) {
-            throw new NotFoundException("No existe el usuario");
+        if (subject == null) {
+            logger.warn("Materia no encontrada para actualización: {}", request.name());
+            throw new NotFoundException("Materia no encontrada");
         }
         subject.setName(request.name());
         subject.setDescription(request.description());
         subject.persist();
-
+        logger.info("Materia actualizada: {}", subject);
         return subjectMapper.toSubjectResponse(subject);
     }
-
 
     @Override
     @Transactional
     public SubjectResponse updateSubjectPatch(Long id, SubjectRegistrationRequest request) {
+        logger.info("Realizando actualización parcial de materia con ID: {}", id);
         Subject subject = subjectRepository.findById(id);
-        if(subject == null) {
-            throw new NotFoundException("No existe el usuario");
+        if (subject == null) {
+            logger.warn("Materia no encontrada para actualización parcial con ID: {}", id);
+            throw new NotFoundException("Materia no encontrada");
         }
         subject.setName(request.name());
         subject.setDescription(request.description());
         subject.persist();
-
+        logger.info("Materia actualizada parcialmente: {}", subject);
         return subjectMapper.toSubjectResponse(subject);
     }
 
     @Override
     public ArrayList<Subject> getSubjects(PaginationRequest request) {
+        logger.info("Obteniendo lista de materias con offset: {} y limit: {}", request.offset(), request.limit());
         PanacheQuery<Subject> query = subjectRepository.findAll();
-        query.page(request.offset() / request.limit() ,request.limit());
-        return new ArrayList<>(query.list());
+        query.page(request.offset() / request.limit(), request.limit());
+        ArrayList<Subject> subjects = new ArrayList<>(query.list());
+        logger.info("Materias obtenidas: {}", subjects.size());
+        return subjects;
     }
 }

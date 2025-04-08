@@ -12,6 +12,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -19,75 +21,92 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+
     final StudentMapper studentMapper;
     final StudentRepository studentRepository;
 
     @Override
     @Transactional
     public StudentResponse createStudent(StudentRegistrationRequest request) {
+        logger.info("Creando un nuevo estudiante con el request: {}", request);
         Student student = studentMapper.parseOf(request);
         student.persist();
+        logger.info("Estudiante creado con éxito: {}", student);
         return studentMapper.toUserResponse(student);
     }
 
     @Override
     public StudentResponse getStudent(Long id) {
+        logger.info("Obteniendo estudiante con ID: {}", id);
         Student student = studentRepository.findById(id);
-        return studentMapper.toUserResponse(student);
+        if (student == null) {
+            logger.warn("Estudiante no encontrado con ID: {}", id);
+            throw new NotFoundException("Estudiante no encontrado");
+        }
+        StudentResponse studentResponse = studentMapper.toUserResponse(student);
+        logger.info("Estudiante obtenido: {}", studentResponse);
+        return studentResponse;
     }
 
     @Override
     @Transactional
     public String deleteStudent(Long id) {
-        StudentResponse user = getStudent(id);
+        logger.info("Eliminando estudiante con ID: {}", id);
+        StudentResponse studentResponse = getStudent(id);
 
-        if (user == null) {
-            throw new NotFoundException("Error");
+        if (studentResponse == null) {
+            logger.warn("No se pudo encontrar el estudiante con ID: {}", id);
+            throw new NotFoundException("Estudiante no encontrado");
         }
-        studentRepository.deleteById(Long.valueOf(user.id()));
-
-        return "El usuario fue eliminado correctamente";
+        studentRepository.deleteById(Long.valueOf(studentResponse.id()));
+        logger.info("Estudiante eliminado correctamente con ID: {}", id);
+        return "El estudiante fue eliminado correctamente";
     }
 
     @Override
     @Transactional
     public StudentResponse updateStudent(StudentRegistrationRequest request) {
+        logger.info("Actualizando estudiante con el request: {}", request);
         Student student = studentRepository.find("identification", request.identification()).firstResult();
-        if(student == null) {
-            throw new NotFoundException("No existe el usuario");
-       }
-       student.setName(request.name());
-       student.setLastName(request.lastName());
-       student.setEmail(request.email());
-       student.setPhoneNumber(request.phoneNumber());
-       student.persist();
-
-       return studentMapper.toUserResponse(student);
-
-    }
-
-    @Override
-    @Transactional
-    public StudentResponse updateStudentPatch(Long id, StudentRegistrationRequest request) {
-        Student student = studentRepository.findById(id);
-        if(student == null) {
-            throw new NotFoundException("No existe el usuario");
+        if (student == null) {
+            logger.warn("Estudiante no encontrado con identificación: {}", request.identification());
+            throw new NotFoundException("Estudiante no encontrado");
         }
         student.setName(request.name());
         student.setLastName(request.lastName());
         student.setEmail(request.email());
         student.setPhoneNumber(request.phoneNumber());
         student.persist();
-
+        logger.info("Estudiante actualizado: {}", student);
         return studentMapper.toUserResponse(student);
+    }
 
+    @Override
+    @Transactional
+    public StudentResponse updateStudentPatch(Long id, StudentRegistrationRequest request) {
+        logger.info("Realizando actualización parcial del estudiante con ID: {}", id);
+        Student student = studentRepository.findById(id);
+        if (student == null) {
+            logger.warn("Estudiante no encontrado con ID: {}", id);
+            throw new NotFoundException("Estudiante no encontrado");
+        }
+        student.setName(request.name());
+        student.setLastName(request.lastName());
+        student.setEmail(request.email());
+        student.setPhoneNumber(request.phoneNumber());
+        student.persist();
+        logger.info("Estudiante actualizado parcialmente: {}", student);
+        return studentMapper.toUserResponse(student);
     }
 
     @Override
     public ArrayList<Student> getStudents(PaginationRequest request) {
+        logger.info("Obteniendo lista de estudiantes con offset: {} y limit: {}", request.offset(), request.limit());
         PanacheQuery<Student> query = studentRepository.findAll();
-        query.page(request.offset() / request.limit() ,request.limit());
-        return new ArrayList<>(query.list());
+        query.page(request.offset() / request.limit(), request.limit());
+        ArrayList<Student> students = new ArrayList<>(query.list());
+        logger.info("Estudiantes obtenidos: {}", students.size());
+        return students;
     }
-
 }
