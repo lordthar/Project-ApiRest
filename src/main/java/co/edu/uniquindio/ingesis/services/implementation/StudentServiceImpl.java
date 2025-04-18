@@ -7,8 +7,13 @@ import co.edu.uniquindio.ingesis.dtos.StudentResponse;
 import co.edu.uniquindio.ingesis.mappers.StudentMapper;
 import co.edu.uniquindio.ingesis.repositories.StudentRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.StudentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +26,33 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+    @Inject
+    MqttService mqttService;
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
-
+    ObjectMapper objectMapper = new ObjectMapper();
     final StudentMapper studentMapper;
     final StudentRepository studentRepository;
 
     @Override
     @Transactional
-    public StudentResponse createStudent(StudentRegistrationRequest request) {
+    public StudentResponse createStudent(StudentRegistrationRequest request)  {
         logger.info("Creando un nuevo estudiante con el request: {}", request);
         Student student = studentMapper.parseOf(request);
         student.persist();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        String jsonPayload = "";
+        try {
+            jsonPayload = objectMapper.writeValueAsString(student);
+        } catch (JsonProcessingException e) {
+            logger.error("Error al convertir el objeto Student a JSON", e);
+            throw new RuntimeException("Error al procesar el JSON del estudiante", e);
+        }
+        mqttService.publicar("student/new",jsonPayload);
+        StudentResponse studentresponse = studentMapper.toUserResponse(student);
         logger.info("Estudiante creado con éxito: {}", student);
-        return studentMapper.toUserResponse(student);
+        return studentresponse;
     }
 
     @Override
@@ -59,6 +78,16 @@ public class StudentServiceImpl implements StudentService {
             logger.warn("No se pudo encontrar el estudiante con ID: {}", id);
             throw new NotFoundException("Estudiante no encontrado");
         }
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        String jsonPayload = "";
+        try {
+            jsonPayload = objectMapper.writeValueAsString(studentResponse);
+        } catch (JsonProcessingException e) {
+            logger.error("Error al convertir el objeto Student a JSON", e);
+            throw new RuntimeException("Error al procesar el JSON del estudiante", e);
+        }
+        mqttService.publicar("student/delete",jsonPayload);
         studentRepository.deleteById(Long.valueOf(studentResponse.id()));
         logger.info("Estudiante eliminado correctamente con ID: {}", id);
         return "El estudiante fue eliminado correctamente";
@@ -78,6 +107,18 @@ public class StudentServiceImpl implements StudentService {
         student.setEmail(request.email());
         student.setPhoneNumber(request.phoneNumber());
         student.persist();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        String jsonPayload = "";
+        try {
+            jsonPayload = objectMapper.writeValueAsString(student);
+        } catch (JsonProcessingException e) {
+            logger.error("Error al convertir el objeto Student a JSON", e);
+            throw new RuntimeException("Error al procesar el JSON del estudiante", e);
+        }
+
+        mqttService.publicar("student/update", jsonPayload);
         logger.info("Estudiante actualizado: {}", student);
         return studentMapper.toUserResponse(student);
     }
@@ -96,6 +137,18 @@ public class StudentServiceImpl implements StudentService {
         student.setEmail(request.email());
         student.setPhoneNumber(request.phoneNumber());
         student.persist();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        String jsonPayload = "";
+        try {
+            jsonPayload = objectMapper.writeValueAsString(student);
+        } catch (JsonProcessingException e) {
+            logger.error("Error al convertir el objeto Student a JSON", e);
+            throw new RuntimeException("Error al procesar el JSON del estudiante", e);
+        }
+
+        mqttService.publicar("student/soft-update", jsonPayload);
         logger.info("Estudiante actualizado parcialmente: {}", student);
         return studentMapper.toUserResponse(student);
     }

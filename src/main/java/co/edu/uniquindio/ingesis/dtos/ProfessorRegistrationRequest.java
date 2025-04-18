@@ -19,13 +19,6 @@ public record ProfessorRegistrationRequest(
         @NotBlank(message = "El email es requerido")
         @Email
         String email,
-        @Size(min=4,max = 20,message = "El username debe tener mínimo 4 caracteres y máximo 20")
-        @NotBlank(message = "El usuario es requerido")
-        String username,
-        @NotBlank(message = "La contraseña es requerida")
-        @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")
-        @Size(min = 8, message = "La longitud minima es de 8")
-        String password,
         @NotNull(message = "La fecha no puede ser nula")
         @PastOrPresent(message = "La fecha no puede ser futura")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

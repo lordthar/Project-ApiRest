@@ -68,9 +68,42 @@ services:
       - elk
     depends_on:
       - elasticsearch
+
+  EMQX:
+    image: emqx/emqx:latest
+    container_name: brokerMQTT
+    environment:
+      - "EMQX_NODE_NAME=emqx@node1.emqx.io"
+      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
+    networks:
+      emqx-bridge:
+        aliases:
+          - node1.emqx.io
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "8084:8084"
+      - "8883:8883"
+      - "18083:18083"
+
+  EMQ2X2:
+    image: emqx/emqx:5.8.6
+    container_name: brokerMQTT2
+    environment:
+      - "EMQX_NODE_NAME=emqx@node2.emqx.io"
+      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
+    networks:
+      emqx-bridge:
+        aliases:
+          - node2.emqx.io
+
 volumes:
   postgres_data:
 
 networks:
   elk:
+    driver: bridge
+  emqx-bridge:
     driver: bridge
