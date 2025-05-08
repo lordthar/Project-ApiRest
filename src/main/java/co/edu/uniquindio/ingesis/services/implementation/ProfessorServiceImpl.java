@@ -4,6 +4,7 @@ import co.edu.uniquindio.ingesis.domain.Professor;
 import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.dtos.ProfessorRegistrationRequest;
 import co.edu.uniquindio.ingesis.dtos.ProfessorResponse;
+import co.edu.uniquindio.ingesis.exceptions.ResourceNotFoundException;
 import co.edu.uniquindio.ingesis.mappers.ProfessorMapper;
 import co.edu.uniquindio.ingesis.repositories.ProfessorRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.ProfessorService;
@@ -61,6 +62,11 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorResponse getProfessor(Long id) {
         logger.info("Obteniendo profesor con ID: {}", id);
         Professor professor = professorRepository.findById(id);
+
+        if (professor == null) {
+            throw new ResourceNotFoundException("Profesor no encontrado");
+        }
+
         ProfessorResponse professorResponse = professorMapper.toProfessorResponse(professor);
         logger.info("Profesor obtenido: {}", professorResponse);
         return professorResponse;
@@ -74,7 +80,7 @@ public class ProfessorServiceImpl implements ProfessorService {
             ProfessorResponse professorResponse = getProfessor(id);
             if (professorResponse == null) {
                 logger.warn("Profesor no encontrado con ID: {}", id);
-                throw new NotFoundException("Profesor no encontrado");
+                throw new ResourceNotFoundException("Profesor no encontrado");
             }
             professorRepository.deleteById(id);
             objectMapper.registerModule(new JavaTimeModule());
@@ -88,11 +94,14 @@ public class ProfessorServiceImpl implements ProfessorService {
                 throw new RuntimeException("Error al procesar el JSON del estudiante", e);
             }
 
-            mqttService.publicar("professor/delete",jsonPayload);
+            mqttService.publicar("professor/delete", jsonPayload);
             logger.info("Profesor eliminado exitosamente con ID: {}", id);
             return "El profesor fue eliminado correctamente";
-        } catch (Exception e) {
+        } catch (ResourceNotFoundException e) {
             logger.error("Error al eliminar profesor con ID: {}", id, e);
+            throw new ResourceNotFoundException("Error al eliminar el profesor");
+        } catch (Exception e2) {
+            logger.error("Error al eliminar profesor con ID: {}", id, e2);
             return "Error al eliminar el profesor";
         }
     }
@@ -104,7 +113,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         Professor professor = professorRepository.find("identification", request.identification()).firstResult();
         if (professor == null) {
             logger.warn("Profesor no encontrado para actualizar: {}", request.identification());
-            throw new NotFoundException("Profesor no encontrado");
+            throw new ResourceNotFoundException("Profesor no encontrado");
         }
         professor.setName(request.name());
         professor.setLastName(request.lastName());

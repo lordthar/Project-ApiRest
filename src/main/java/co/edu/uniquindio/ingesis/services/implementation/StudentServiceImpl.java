@@ -4,6 +4,7 @@ import co.edu.uniquindio.ingesis.domain.Student;
 import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.dtos.StudentRegistrationRequest;
 import co.edu.uniquindio.ingesis.dtos.StudentResponse;
+import co.edu.uniquindio.ingesis.exceptions.ResourceNotFoundException;
 import co.edu.uniquindio.ingesis.mappers.StudentMapper;
 import co.edu.uniquindio.ingesis.repositories.StudentRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.StudentService;
@@ -61,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(id);
         if (student == null) {
             logger.warn("Estudiante no encontrado con ID: {}", id);
-            throw new NotFoundException("Estudiante no encontrado");
+            throw new ResourceNotFoundException("Estudiante no encontrado");
         }
         StudentResponse studentResponse = studentMapper.toUserResponse(student);
         logger.info("Estudiante obtenido: {}", studentResponse);
@@ -76,7 +77,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (studentResponse == null) {
             logger.warn("No se pudo encontrar el estudiante con ID: {}", id);
-            throw new NotFoundException("Estudiante no encontrado");
+            throw new ResourceNotFoundException("Estudiante no encontrado");
         }
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -100,7 +101,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.find("identification", request.identification()).firstResult();
         if (student == null) {
             logger.warn("Estudiante no encontrado con identificación: {}", request.identification());
-            throw new NotFoundException("Estudiante no encontrado");
+            throw new ResourceNotFoundException("Estudiante no encontrado");
         }
         student.setName(request.name());
         student.setLastName(request.lastName());
@@ -130,7 +131,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(id);
         if (student == null) {
             logger.warn("Estudiante no encontrado con ID: {}", id);
-            throw new NotFoundException("Estudiante no encontrado");
+            throw new ResourceNotFoundException("Estudiante no encontrado");
         }
         student.setName(request.name());
         student.setLastName(request.lastName());

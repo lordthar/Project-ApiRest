@@ -4,6 +4,7 @@ import co.edu.uniquindio.ingesis.domain.Subject;
 import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.dtos.SubjectRegistrationRequest;
 import co.edu.uniquindio.ingesis.dtos.SubjectResponse;
+import co.edu.uniquindio.ingesis.exceptions.ResourceNotFoundException;
 import co.edu.uniquindio.ingesis.mappers.SubjectMapper;
 import co.edu.uniquindio.ingesis.repositories.SubjectRepository;
 import co.edu.uniquindio.ingesis.services.interfaces.SubjectService;
@@ -40,6 +41,9 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectResponse getSubject(Long id) {
         logger.info("Obteniendo materia con ID: {}", id);
         Subject subject = subjectRepository.findById(id);
+        if (subject == null) {
+            throw new ResourceNotFoundException("No se encontro la materia con ID: " + id);
+        }
         SubjectResponse subjectResponse = subjectMapper.toSubjectResponse(subject);
         logger.info("Materia obtenida: {}", subjectResponse);
         return subjectResponse;
@@ -53,13 +57,16 @@ public class SubjectServiceImpl implements SubjectService {
             SubjectResponse subjectResponse = getSubject(id);
             if (subjectResponse == null) {
                 logger.warn("Materia no encontrada con ID: {}", id);
-                throw new NotFoundException("Materia no encontrada");
+                throw new ResourceNotFoundException("Materia no encontrada");
             }
             subjectRepository.deleteById(id);
             logger.info("Materia eliminada correctamente con ID: {}", id);
             return "Materia eliminada correctamente";
-        } catch (Exception e) {
+        } catch (ResourceNotFoundException e) {
             logger.error("Error al eliminar materia con ID: {}", id, e);
+            throw e;
+        } catch (Exception e2) {
+            logger.error("Error al eliminar materia con ID: {}", id, e2);
             return "Error al eliminar la materia";
         }
     }
@@ -71,7 +78,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = subjectRepository.find("name", request.name()).firstResult();
         if (subject == null) {
             logger.warn("Materia no encontrada para actualización: {}", request.name());
-            throw new NotFoundException("Materia no encontrada");
+            throw new ResourceNotFoundException("Materia no encontrada");
         }
         subject.setName(request.name());
         subject.setDescription(request.description());
@@ -87,7 +94,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = subjectRepository.findById(id);
         if (subject == null) {
             logger.warn("Materia no encontrada para actualización parcial con ID: {}", id);
-            throw new NotFoundException("Materia no encontrada");
+            throw new ResourceNotFoundException( "Materia no encontrada");
         }
         subject.setName(request.name());
         subject.setDescription(request.description());
