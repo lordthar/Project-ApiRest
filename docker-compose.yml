@@ -10,6 +10,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ci-network
 
   app:
     image: my-quarkus-app:latest
@@ -69,41 +71,43 @@ services:
     depends_on:
       - elasticsearch
 
-  EMQX:
-    image: emqx/emqx:latest
-    container_name: brokerMQTT
-    environment:
-      - "EMQX_NODE_NAME=emqx@node1.emqx.io"
-      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
-      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
-    networks:
-      emqx-bridge:
-        aliases:
-          - node1.emqx.io
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    user: root
     ports:
-      - "1883:1883"
-      - "8083:8083"
-      - "8084:8084"
-      - "8883:8883"
-      - "18083:18083"
-
-  EMQ2X2:
-    image: emqx/emqx:5.8.6
-    container_name: brokerMQTT2
+      - "8100:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - C:\Users\lanth\Desktop\Project-ApiRest\src\main\resources\privateKey.pem:/var/jenkins_home/privateKey.pem
+      - C:\Users\lanth\Desktop\Project-ApiRest\src\main\resources\privateKey.pem:/var/jenkins_home/publicKey.pem
     environment:
-      - "EMQX_NODE_NAME=emqx@node2.emqx.io"
-      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
-      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io]"
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
     networks:
-      emqx-bridge:
-        aliases:
-          - node2.emqx.io
+      - ci-network
+
+  sonarqube:
+      image: sonarqube:lts
+      container_name: sonarqube
+      ports:
+        - "9000:9000"
+      environment:
+        - SONARQUBE_JDBC_USERNAME=sonar
+        - SONARQUBE_JDBC_PASSWORD=sonar
+        - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/api-proyect-database
+      depends_on:
+        - postgres
+      networks:
+        - ci-network
+
 
 volumes:
   postgres_data:
+  jenkins_home:
 
 networks:
   elk:
     driver: bridge
-  emqx-bridge:
-    driver: bridge
+  ci-network:
