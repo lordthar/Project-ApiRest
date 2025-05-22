@@ -9,15 +9,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "programs")
+@Table(name = "examples")
 @Getter
 @Setter
-public class Program extends PanacheEntity {
+public class Example extends PanacheEntity {
     private String title;
     private String description;
     private String code;
+    private String topic;
+    private String difficulty;
 
     @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
 }
