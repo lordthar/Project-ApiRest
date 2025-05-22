@@ -4,6 +4,7 @@ import co.edu.uniquindio.ingesis.dtos.ExampleRequest;
 import co.edu.uniquindio.ingesis.dtos.ExampleResponse;
 import co.edu.uniquindio.ingesis.dtos.PaginationRequest;
 import co.edu.uniquindio.ingesis.services.implementation.ExampleServiceImpl;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ExampleResource {
     private static final Logger logger = LoggerFactory.getLogger(ExampleResource.class);
 
+    @Inject
     ExampleServiceImpl exampleService;
 
     @POST

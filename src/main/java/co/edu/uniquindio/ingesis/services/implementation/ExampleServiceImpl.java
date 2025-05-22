@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -42,6 +43,7 @@ public class ExampleServiceImpl implements ExampleService {
         }
 
         Example example = exampleMapper.parseOf(exampleRequest);
+        example.setCreatedAt(LocalDateTime.now());
         example.setProfessor(professor);
         example.persist();
 

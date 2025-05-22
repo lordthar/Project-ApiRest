@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "examples")
 @Getter
@@ -18,6 +20,7 @@ public class Example extends PanacheEntity {
     private String code;
     private String topic;
     private String difficulty;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "professor_id")

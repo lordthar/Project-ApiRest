@@ -14,7 +14,6 @@ public interface ExampleMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "professor.id", source = "professorId")
     Example parseOf(ExampleRequest request);
 
