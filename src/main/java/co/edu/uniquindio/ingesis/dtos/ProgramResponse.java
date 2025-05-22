@@ -3,6 +3,7 @@ package co.edu.uniquindio.ingesis.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public record ProgramResponse(
+
         @NotBlank(message = "El id es requerido")
         String id,
 
@@ -13,6 +14,9 @@ public record ProgramResponse(
         String description,
 
         @NotBlank(message = "El código es requerido")
-        String code
+        String code,
+
+        @NotBlank(message = "El ID del estudiante es requerido")
+        String studentId
 ) {
 }
