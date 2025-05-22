@@ -3,13 +3,13 @@ package co.edu.uniquindio.ingesis.dtos;
 import java.time.LocalDateTime;
 
 public record CommentResponse(
-        Long id,  // ID del comentario
+        Long id,
 
-        Long programId,  // ID del programa al que pertenece el comentario
+        Long programId,
 
-        String content,  // Contenido del comentario
+        String content,
 
-        LocalDateTime createdAt,  // Fecha de creación del comentario
+        LocalDateTime createdAt,
 
-        LocalDateTime updatedAt  // Fecha de última actualización del comentario
+        LocalDateTime updatedAt
 ) {}

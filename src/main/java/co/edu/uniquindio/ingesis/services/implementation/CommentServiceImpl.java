@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
             String mensaje = "Hola " + estudiante.getName() + ",\n\n" +
                     "Un profesor ha comentado tu programa \"" + program.getTitle() + "\" (código: " + program.getCode() + ").\n\n" +
                     "Comentario: " + request.content() + "\n\n" +
-                    "Saludos,\nTu plataforma académica";
+                    "Saludos";
 
             try {
                 objectMapper.registerModule(new JavaTimeModule());
@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
                 String jsonPayload = objectMapper.writeValueAsString(payload);
 
                 mqttService.publicar("comment/notify", jsonPayload);
-                logger.info("Notificación MQTT enviada al estudiante: {}", estudiante.getEmail());
+                logger.info("Notificación MQTT enviada al estudiante: {}", estudiante.getName());
 
             } catch (JsonProcessingException e) {
                 logger.error("Error al serializar el mensaje MQTT de comentario", e);
